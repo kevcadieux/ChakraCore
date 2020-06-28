@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
+ /**************************************************************************
+  * MODIFICATION NOTICE:
+  * This file has been modified by Kevin Cadieux (Microsoft) for educational
+  * purposes and is different from the original version.
+  * ***********************************************************************/
+
 #include "src/opcode.h"
 
 #include "src/feature.h"
 
 namespace wabt {
-
-// static
-Opcode::Info Opcode::infos_[] = {
-#define WABT_OPCODE(rtype, type1, type2, type3, mem_size, prefix, code, Name, \
-                    text)                                                     \
-  {text,        Type::rtype, Type::type1,                                     \
-   Type::type2, Type::type3, mem_size,                                        \
-   prefix,      code,        PrefixCode(prefix, code)},
-#include "src/opcode.def"
-#undef WABT_OPCODE
-
-    {"<invalid>", Type::Void, Type::Void, Type::Void, Type::Void, 0, 0, 0, 0},
-};
 
 #define WABT_OPCODE(rtype, type1, type2, type3, mem_size, prefix, code, Name, \
                     text)                                                     \

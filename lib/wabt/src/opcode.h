@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/**************************************************************************
+ * MODIFICATION NOTICE:
+ * This file has been modified by Kevin Cadieux (Microsoft) for educational
+ * purposes and is different from the original version.
+ * ***********************************************************************/
+
 #ifndef WABT_OPCODE_H_
 #define WABT_OPCODE_H_
 
@@ -26,6 +32,12 @@
 namespace wabt {
 
 class Features;
+
+constexpr uint32_t PrefixCode(uint8_t prefix, uint32_t code) {
+    // For now, 8 bits is enough for all codes.
+    assert(code < 0x100);
+    return (prefix << 8) | code;
+}
 
 struct Opcode {
   // Opcode enumerations.
@@ -103,12 +115,6 @@ struct Opcode {
     uint32_t prefix_code;  // See PrefixCode below. Used for fast lookup.
   };
 
-  static uint32_t PrefixCode(uint8_t prefix, uint32_t code) {
-    // For now, 8 bits is enough for all codes.
-    assert(code < 0x100);
-    return (prefix << 8) | code;
-  }
-
   // The Opcode struct only stores an enumeration (Opcode::Enum) of all valid
   // opcodes, densely packed. We want to be able to store invalid opcodes as
   // well, for display to the user. To encode these, we use PrefixCode() to
@@ -136,7 +142,17 @@ struct Opcode {
   }
 
   Info GetInfo() const;
-  static Info infos_[];
+  static constexpr Info infos_[] = {
+#define WABT_OPCODE(rtype, type1, type2, type3, mem_size, prefix, code, Name, \
+                    text)                                                     \
+  {text,        Type::rtype, Type::type1,                                     \
+   Type::type2, Type::type3, mem_size,                                        \
+   prefix,      code,        PrefixCode(prefix, code)},
+#include "src/opcode.def"
+#undef WABT_OPCODE
+
+    {"<invalid>", Type::Void, Type::Void, Type::Void, Type::Void, 0, 0, 0, 0},
+  };
 
   Enum enum_;
 };
