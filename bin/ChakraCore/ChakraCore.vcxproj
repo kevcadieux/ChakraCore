@@ -58,6 +58,7 @@
         %(AdditionalDependencies)
       </AdditionalDependencies>
       <DelayLoadDLLs>%(DelayLoadDLLs);oleaut32.dll</DelayLoadDLLs>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Test|x64'">/d2:"-ReducedOptimizeHugeFunctions" %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
